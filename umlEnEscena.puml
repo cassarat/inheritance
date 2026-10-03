@@ -1,0 +1,75 @@
+@startuml EnEscena
+skinparam classAttributeIconSize 0
+skinparam Shadowing false
+
+abstract class Equipo {
+    # codigo: String
+    # marca: String
+    # modelo: String
+    # tarifaDiaria: double
+    # disponible: boolean
+    + Equipo(codigo: String, marca: String, modelo: String, tarifaDiaria: double)
+    + {abstract} calcularCosto(dias: int): double
+    + isDisponible(): boolean
+    + setDisponible(disponible: boolean): void
+    + getCodigo(): String
+    + getTarifaDiaria(): double
+    + toString(): String
+}
+
+class Proyector {
+    - luminosidad: int
+    - inalambrico: boolean
+    + Proyector(codigo: String, marca: String, modelo: String, tarifaDiaria: double, luminosidad: int, inalambrico: boolean)
+    + calcularCosto(dias: int): double
+    + toString(): String
+}
+
+class CamaraVideo {
+    - resolucion: int
+    + CamaraVideo(codigo: String, marca: String, modelo: String, tarifaDiaria: double, resolucion: int)
+    + calcularCosto(dias: int): double
+    + toString(): String
+}
+
+class EquipoSonido {
+    - potencia: double
+    + EquipoSonido(codigo: String, marca: String, modelo: String, tarifaDiaria: double, potencia: double)
+    + calcularCosto(dias: int): double
+    + toString(): String
+}
+
+class EnEscena {
+    - inventario: List<Equipo>
+    - ingresosTotales: double
+    + main(args: String[]): void
+    + registrarEquipo(): void
+    + buscarEquipo(codigo: String): Equipo
+    + cotizarAlquiler(): void
+    + confirmarAlquiler(): void
+    + registrarDevolucion(): void
+    + generarReporte(): void
+    - inicializarDatosPrueba(): void
+}
+
+Equipo <|-- Proyector
+Equipo <|-- CamaraVideo
+Equipo <|-- EquipoSonido
+
+EnEscena o--> "*" Equipo : administra e interactúa >
+
+note right of Equipo::calcularCosto
+  Decisión de diseño: Método abstracto. 
+  Delega la responsabilidad del cobro a las 
+  subclases mediante polimorfismo. Esto permite 
+  que agregar nuevas categorías en el futuro 
+  no modifique el código existente.
+end note
+
+note left of EnEscena::ingresosTotales
+  Regla de negocio: Solo se incrementa 
+  al confirmar exitosamente un alquiler. 
+  Las cotizaciones no alteran este valor.
+end note
+
+@enduml
